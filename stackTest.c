@@ -19,6 +19,7 @@ void test_push_adds_one_int_element_to_top_of_the_stack_and_returns_1_when_stack
 	assert((*stack.top)->data == &a);
 	assert(*(int*)((*stack.top)->data) == 4);
 	assert((*stack.top) == stack.list->head);
+	assert((*stack.top) == stack.list->tail);
 	free(stack.list);
 }
 
@@ -142,7 +143,6 @@ void test_pop_deletes_the_last_element_from_the_double_stack(){
 	assert(*(double*)(*stack.top)->data == 748.75);
 	assert(stack.list->count == 3);
 	pop(stack);
-	assert((*stack.top)->data == &b);
 	assert(*(double*)(*stack.top)->data == 5.33);
 	assert(stack.list->count == 2);
 	free(stack.list);
@@ -181,24 +181,37 @@ void test_pop_deletes_the_last_element_and_list_head_is_stack_top_when_only_1_el
 	Stack stack = createStack();
 	push(stack, &a);
 	push(stack, &b);
+	assert(*(string*)(*stack.top)->data == "sdcdac");
 	pop(stack);
-
 	assert(*(string*)(*stack.top)->data == "");
 	assert((*stack.top) == stack.list->head);
+	assert((*stack.top) == stack.list->tail);
 	assert(stack.list->count == 1);
+	free(stack.list);
+}
+
+void test_pop_makes_the_top_and_list_head_and_tail_becomes_NULL_when_only_1_element_is_in_stack(){
+	string a = "sdcdac";
+	Stack stack = createStack();
+	push(stack, &a);
+	assert(*(string*)(*stack.top)->data == "sdcdac");
+	assert(stack.list->count == 1);
+	pop(stack);
+	assert((*stack.top) == NULL);
+	assert(stack.list->head == NULL);
+	assert(stack.list->tail == NULL);
+	assert(stack.list->count == 0);
 	free(stack.list);
 }
 
 void test_stack_gives_data_15_at_index_2(){
 	Stack stack = createStack();
 	int data[] = {12,13,15,16}, count, index, i;
-
 	for(i=0;i<4;i++)
 		count = push(stack, &data[i]);
-	
 	index = indexOf(*stack.list, &data[2]);
 
 	assertEqual(count,4);
 	assertEqual(index,2);
 	assert(*(int*)(*stack.top)->data == data[3]);
-};
+}
